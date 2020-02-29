@@ -5,17 +5,16 @@
  */
 package main;
 
+import hilos.HiloServidor;
+
 /**
  *
- * @author cgonz
+ * @author Carlos González
  */
 public class DelphosServidor {
 
-	/**
-	 * @param args the command line arguments
-	 */
 	public static void main(String[] args) {
-		// TODO code application logic here
-	}
-	
+		HiloServidor servidor = new HiloServidor();
+		servidor.start();
+	}	
 }
