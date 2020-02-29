@@ -28,20 +28,16 @@ public class HiloServidor implements Runnable {
 
 	@Override
 	public void run() {
-
-		while (true) {
-			try {
-
-				this.servidor = new ServerSocket(PUERTO);
-				while(!this.servidor.isClosed()){
-					System.out.println("Servidor funcionando");
-					this.cliente = this.servidor.accept();
-					HiloCliente hiloCliente = new HiloCliente(this.cliente);
-					hiloCliente.start();
-				}	
-			} catch (IOException e) {
-				System.out.println("Ha ocurrido un problema con el servidor "+e.getMessage());
+		try {
+			this.servidor = new ServerSocket(PUERTO);
+			while (!this.servidor.isClosed()) {
+				System.out.println("Servidor funcionando");
+				this.cliente = this.servidor.accept();
+				HiloCliente hiloCliente = new HiloCliente(this.cliente);
+				hiloCliente.start();
 			}
+		} catch (IOException e) {
+			System.out.println("Ha ocurrido un problema con el servidor " + e.getMessage());
 		}
 	}
 }

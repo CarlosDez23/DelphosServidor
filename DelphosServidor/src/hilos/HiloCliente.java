@@ -43,13 +43,17 @@ public class HiloCliente implements Runnable {
 
 	@Override
 	public void run() {
-		while (!this.cliente.isClosed()) {
-			try {
-				short tipoOrden = this.input.readShort();
-				gestionOrden(tipoOrden);
-			} catch (IOException e) {
-				e.printStackTrace();
+		try {
+			while (!this.cliente.isClosed()) {
+				try {
+					short tipoOrden = this.input.readShort();
+					gestionOrden(tipoOrden);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -91,15 +95,15 @@ public class HiloCliente implements Runnable {
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
-			System.out.println("La opción del menú en la que ha fallado es "+orden);
-			
+			System.out.println("La opción del menú en la que ha fallado es " + orden);
+
 		}
 
 	}
 
 	private void registrarUsuario() throws IOException, ClassNotFoundException {
 		Usuario usuario = (Usuario) this.input.readObject();
-		this.output.writeBoolean(ConexionEstaticaBBDD.registrarUsuario(usuario));
+		this.output.writeObject(ConexionEstaticaBBDD.registrarUsuario(usuario));
 	}
 
 	private void login() {
