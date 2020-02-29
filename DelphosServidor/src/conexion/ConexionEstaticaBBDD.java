@@ -84,7 +84,9 @@ public class ConexionEstaticaBBDD {
 	
 	public static Usuario comprobarUsuario(String nombre, String password){
 		Usuario usuario = null;
-		String sql = "SELECT * FROM "+ConstantesConexionBBDD.TABLAUSUARIOS+" WHERE NOMBRE= '"+nombre+"' AND PASSWORD = '"+password+"'";
+		String sql = "SELECT U.ID, U.NOMBRE, R.ID_ROL FROM "+ConstantesConexionBBDD.TABLAUSUARIOS+" U, "+ConstantesConexionBBDD.TABLAROLESASIGNADOS+
+				" R WHERE NOMBRE= '"+nombre+"' AND PASSWORD = '"+password+"'"
+				+ "AND U.ID = R.ID_USUARIO";
 		try {
 			registros = sentenciaSQL.executeQuery(sql);
 			if (registros.next()) {
@@ -95,7 +97,7 @@ public class ConexionEstaticaBBDD {
 				usuario.setTelefono(registros.getString(4));
 				usuario.setDireccion(registros.getString(5));
 				usuario.setEdad(registros.getInt(6));
-				usuario.setRol(registros.getByte(7));
+				usuario.setRol((byte)registros.getInt(7));
 				System.out.println(usuario.toString());
 			}		
 		} catch (SQLException e) {
@@ -103,5 +105,4 @@ public class ConexionEstaticaBBDD {
 		}
 		return usuario; 
 	}
-
 }
