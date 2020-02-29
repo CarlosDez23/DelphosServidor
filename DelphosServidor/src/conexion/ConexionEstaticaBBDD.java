@@ -81,5 +81,27 @@ public class ConexionEstaticaBBDD {
 		}
 		return existe;
 	}
+	
+	public static Usuario comprobarUsuario(String nombre, String password){
+		Usuario usuario = null;
+		String sql = "SELECT * FROM "+ConstantesConexionBBDD.TABLAUSUARIOS+" WHERE NOMBRE= '"+nombre+"' AND PASSWORD = '"+password+"'";
+		try {
+			registros = sentenciaSQL.executeQuery(sql);
+			if (registros.next()) {
+				usuario = new Usuario();
+				usuario.setIdUsuario(registros.getInt(1));
+				usuario.setNombreUsuario(registros.getString(2));
+				usuario.setPasswordString(registros.getString(3));
+				usuario.setTelefono(registros.getString(4));
+				usuario.setDireccion(registros.getString(5));
+				usuario.setEdad(registros.getInt(6));
+				usuario.setRol(registros.getByte(7));
+				System.out.println(usuario.toString());
+			}		
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return usuario; 
+	}
 
 }
