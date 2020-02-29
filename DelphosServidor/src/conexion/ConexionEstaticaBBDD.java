@@ -45,17 +45,41 @@ public class ConexionEstaticaBBDD {
 	 */
 	public synchronized static boolean registrarUsuario(Usuario usuario) {
 		boolean registrado = false;
-		String sql = "INSERT INTO " + ConstantesConexionBBDD.TABLAUSUARIOS + " VALUES ( " + usuario.getIdUsuario() + ", '" + usuario.getNombreUsuario() + "', '" + usuario.getPasswordString() + "', '" + usuario.getDireccion()
-				+ "', " + usuario.getEdad() + ", " + usuario.getRol() + ")";
+		String sql = "INSERT INTO " + ConstantesConexionBBDD.TABLAUSUARIOS + "(NOMBRE, PASSWORD,TELEFONO,DIRECCION,EDAD) VALUES ('" + usuario.getNombreUsuario() + "', '" + usuario.getPasswordString() + "', '"+ usuario.getTelefono()+ "','"
+				+ usuario.getDireccion()
+				+ "', " + usuario.getEdad()+")";
+		
+		System.out.println(sql);
 		try {
-			int registrados = sentenciaSQL.executeUpdate(sql);
-			if (registrados != 0) {
-				registrado = true;
+			if (!existeUsuario(usuario.getNombreUsuario())) {
+				int registrados = sentenciaSQL.executeUpdate(sql);
+				if (registrados != 0) {
+					registrado = true;
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return registrado;
+	}
+	
+	/**
+	 * Método para comprobar que no existe un usuario con el mismo nombre en la BBDD	 
+	 * @param nombre
+	 * @return 
+	 */
+	private static boolean existeUsuario(String nombre) {
+		boolean existe = false;
+		String sql = "SELECT * FROM " + ConstantesConexionBBDD.TABLAUSUARIOS + " WHERE NOMBRE = '" + nombre + "'";
+		try {
+			registros = sentenciaSQL.executeQuery(sql);
+			if (registros.next()) {
+				existe = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return existe;
 	}
 
 }

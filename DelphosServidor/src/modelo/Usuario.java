@@ -3,30 +3,43 @@
  */
 package modelo;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Carlos González
  */
-public class Usuario {
+public class Usuario implements Serializable {
 	
 	private int idUsuario;
 	private String nombreUsuario;
 	private String passwordString;
+	private String telefono; 
 	private String direccion;
 	private int edad;
 	private byte rol;
 	
 	public Usuario() {
 	}
-	
-	public Usuario(int idUsuario, String nombreUsuario, String passwordString, String direccion, int edad, byte rol) {
+
+	public Usuario(int idUsuario, String nombreUsuario, String passwordString, String telefono, String direccion, int edad, byte rol) {
 		this.idUsuario = idUsuario;
 		this.nombreUsuario = nombreUsuario;
 		this.passwordString = passwordString;
+		this.telefono = telefono;
 		this.direccion = direccion;
 		this.edad = edad;
 		this.rol = rol;
 	}
+	
+	public Usuario(String nombreUsuario, String passwordString, String telefono, String direccion, int edad) {
+		this.nombreUsuario = nombreUsuario;
+		this.passwordString = passwordString;
+		this.telefono = telefono;
+		this.direccion = direccion;
+		this.edad = edad;
+	}
+	
 	
 	public int getIdUsuario() {
 		return idUsuario;
@@ -76,8 +89,17 @@ public class Usuario {
 		this.rol = rol;
 	}
 
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
 	@Override
 	public String toString() {
-		return "Usuario{" + "idUsuario=" + idUsuario + ", nombreUsuario=" + nombreUsuario + ", passwordString=" + passwordString + ", direccion=" + direccion + ", edad=" + edad + ", rol=" + rol + '}';
+		return "Usuario{" + "idUsuario=" + idUsuario + ", nombreUsuario=" + nombreUsuario + ", passwordString=" + passwordString + ", telefono=" + telefono + ", direccion=" + direccion + ", edad=" + edad + ", rol=" + rol + '}';
 	}
+	
 }
