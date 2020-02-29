@@ -5,25 +5,26 @@
  */
 package hilos;
 
+import conexion.ConexionEstaticaBBDD;
 import constantes.CodigoOrden;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import modelo.Usuario;
 
 /**
  *
  * @author Carlos González
  */
-public class HiloCliente implements Runnable{
-	
+public class HiloCliente implements Runnable {
+
 	private Thread hilo;
 	private Socket cliente;
 	private ObjectOutputStream output;
-	private ObjectInputStream input; 
+	private ObjectInputStream input;
 	//private DataOutputStream outputNormal;
 	//private DataInputStream inputNormal;
-	
 
 	public HiloCliente(Socket cliente) {
 		this.hilo = new Thread(this);
@@ -35,27 +36,26 @@ public class HiloCliente implements Runnable{
 			e.printStackTrace();
 		}
 	}
-	
-	public void start(){
+
+	public void start() {
 		this.hilo.start();
 	}
-	
-	
 
 	@Override
 	public void run() {
-		while(!this.cliente.isClosed()){
+		while (!this.cliente.isClosed()) {
 			try {
 				short tipoOrden = this.input.readShort();
-				gestionOrden(tipoOrden);	
+				gestionOrden(tipoOrden);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	private void gestionOrden(short orden){
-		switch(orden){
+
+	private void gestionOrden(short orden) {
+		try {
+			switch (orden) {
 			case CodigoOrden.REGISTRAR:
 				registrarUsuario();
 				break;
@@ -88,47 +88,53 @@ public class HiloCliente implements Runnable{
 				break;
 			default:
 				break;
+			}
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			System.out.println("La opción del menú en la que ha fallado es "+orden);
+			
 		}
+
 	}
-	
-	private void registrarUsuario(){
-		
-		
+
+	private void registrarUsuario() throws IOException, ClassNotFoundException {
+		Usuario usuario = (Usuario) this.input.readObject();
+		this.output.writeBoolean(ConexionEstaticaBBDD.registrarUsuario(usuario));
 	}
-	
-	private void login(){
-		
+
+	private void login() {
+
 	}
-	
-	private void activarUsuario(){
-		
+
+	private void activarUsuario() {
+
 	}
-	
-	private void addCurso(){
-		
+
+	private void addCurso() {
+
 	}
-	
-	private void editarCurso(){
-		
+
+	private void editarCurso() {
+
 	}
-	
-	private void asignarRol(){
-		
+
+	private void asignarRol() {
+
 	}
-	
-	private void elegirCurso(){
-		
+
+	private void elegirCurso() {
+
 	}
-	
-	private void ponerNota(){
-		
+
+	private void ponerNota() {
+
 	}
-	
-	private void elegirProfesor(){
-		
+
+	private void elegirProfesor() {
+
 	}
-	
-	private void verNota(){
-		
+
+	private void verNota() {
+
 	}
 }
