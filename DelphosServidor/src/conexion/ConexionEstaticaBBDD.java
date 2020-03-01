@@ -48,7 +48,7 @@ public class ConexionEstaticaBBDD {
 		boolean registrado = false;
 		String sql = "INSERT INTO " + ConstantesConexionBBDD.TABLAUSUARIOS + "(NOMBRE, PASSWORD,TELEFONO,DIRECCION,EDAD) VALUES ('" + usuario.getNombreUsuario() + "', '" + usuario.getPasswordString() + "', '"+ usuario.getTelefono()+ "','"
 				+ usuario.getDireccion()
-				+ "', " + usuario.getEdad()+")";
+				+ "', " + usuario.getEdad()+","+0+")";
 		
 		System.out.println(sql);
 		try {
@@ -133,5 +133,19 @@ public class ConexionEstaticaBBDD {
 			e.printStackTrace();
 		}
 		return listaUsuarios; 
+	}
+	
+	public synchronized static boolean asignarRol (Usuario usuario){
+		boolean activado = false; 
+		int rol = (int) usuario.getRol();
+		String sql = "UPDATE "+ConstantesConexionBBDD.TABLAROLESASIGNADOS+" SET ID_ROL = "+rol+" WHERE ID_USUARIO = "+usuario.getIdUsuario();
+		try {
+			if (sentenciaSQL.executeUpdate(sql) == 1) {
+				activado = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return activado; 
 	}
 }

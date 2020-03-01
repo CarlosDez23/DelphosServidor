@@ -71,7 +71,10 @@ public class HiloCliente implements Runnable {
 				break;
 			case CodigoOrden.LISTAR_USUARIOS:
 				listarUsuarios();
-				break;		
+				break;	
+			case CodigoOrden.ACTIVAR_USUARIO:
+				activarUsuario();
+				break;
 			default:
 				break;
 			}
@@ -96,8 +99,10 @@ public class HiloCliente implements Runnable {
 		this.output.writeObject(listaUsuarios);
 	}
 
-	private void activarUsuario() {
-
+	private void activarUsuario() throws IOException, ClassNotFoundException {
+		Usuario usuario = (Usuario) this.input.readObject();
+		this.output.writeObject(ConexionEstaticaBBDD.asignarRol(usuario));
+		
 	}
 
 	private void addCurso() {
