@@ -23,4 +23,5 @@ public class CodigoOrden {
 	public static final short VER_NOTA = 9;
 	public static final short LISTAR_USUARIOS = 10;
 	public static final short LISTAR_CURSOS = 11; 
+	public static final short ASIGNAR_PROFESOR = 12; 
 }

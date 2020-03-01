@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import modelo.Alumno;
 import modelo.Curso;
 import modelo.Usuario;
 
@@ -79,6 +80,22 @@ public class HiloCliente implements Runnable {
 			case CodigoOrden.LISTAR_CURSOS:
 				listarCursos();
 				break;
+			case CodigoOrden.ADD_CURSO:
+				addCurso();
+				break;
+			
+			case CodigoOrden.EDITAR_CURSO:
+				editarCurso();
+				break;
+			
+			case CodigoOrden.ELEGIR_CURSO:
+				elegirCurso();
+				break;
+			
+			case CodigoOrden.ASIGNAR_PROFESOR:
+				asignarProfesor();
+				break;
+				
 			default:
 				break;
 			}
@@ -113,21 +130,28 @@ public class HiloCliente implements Runnable {
 		this.output.writeObject(listaCursos);
 	}
 
-	private void addCurso() {
-
+	private void addCurso() throws IOException, ClassNotFoundException {
+		Curso curso = (Curso)this.input.readObject();
+		this.output.writeObject(ConexionEstaticaBBDD.insertarCurso(curso));
 	}
 
-	private void editarCurso() {
-
+	private void editarCurso() throws IOException, ClassNotFoundException {
+		Curso curso = (Curso)this.input.readObject();
+		this.output.writeObject(ConexionEstaticaBBDD.actualizarCurso(curso));
 	}
 
-	private void asignarRol() {
-
+	private void elegirCurso() throws IOException, ClassNotFoundException {
+		Alumno alumno = (Alumno) this.input.readObject();
+		this.output.writeObject(ConexionEstaticaBBDD.asignarCurso(alumno));
+	}	
+	
+	private void asignarProfesor() throws IOException, ClassNotFoundException {
+		Usuario usuario = (Usuario)this.input.readObject();
+		int id = (int)this.input.readObject();
+		this.output.writeObject(ConexionEstaticaBBDD.asignarProfesor(usuario, id));
+	
 	}
-
-	private void elegirCurso() {
-
-	}
+		
 
 	private void ponerNota() {
 
@@ -140,6 +164,8 @@ public class HiloCliente implements Runnable {
 	private void verNota() {
 
 	}
+
+	
 	
 	
 }
