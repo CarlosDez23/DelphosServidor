@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import modelo.Usuario;
 
 /**
@@ -46,7 +47,9 @@ public class HiloCliente implements Runnable {
 		try {
 			while (!this.cliente.isClosed()) {
 				try {
-					short tipoOrden = this.input.readShort();
+					System.out.println("Esperando orden");
+					short tipoOrden = (short) this.input.readObject();
+					System.out.println(tipoOrden);
 					gestionOrden(tipoOrden);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -66,39 +69,16 @@ public class HiloCliente implements Runnable {
 			case CodigoOrden.LOGIN:
 				login();
 				break;
-			case CodigoOrden.ACTIVAR_USUARIO:
-				activarUsuario();
-				break;
-			case CodigoOrden.ADD_CURSO:
-				addCurso();
-				break;
-			case CodigoOrden.EDITAR_CURSO:
-				editarCurso();
-				break;
-			case CodigoOrden.ASIGNAR_ROL:
-				asignarRol();
-				break;
-			case CodigoOrden.ELEGIR_CURSO:
-				elegirCurso();
-				break;
-			case CodigoOrden.PONER_NOTA:
-				ponerNota();
-				break;
-			case CodigoOrden.ELEGIR_PROFESOR:
-				elegirProfesor();
-				break;
-			case CodigoOrden.VER_NOTA:
-				verNota();
-				break;
+			case CodigoOrden.LISTAR_USUARIOS:
+				listarUsuarios();
+				break;		
 			default:
 				break;
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 			System.out.println("La opción del menú en la que ha fallado es " + orden);
-
 		}
-
 	}
 
 	private void registrarUsuario() throws IOException, ClassNotFoundException {
@@ -109,6 +89,11 @@ public class HiloCliente implements Runnable {
 	private void login() throws ClassNotFoundException, IOException {
 		Usuario usuario = (Usuario) this.input.readObject();
 		this.output.writeObject(ConexionEstaticaBBDD.comprobarUsuario(usuario.getNombreUsuario(), usuario.getPasswordString()));
+	}
+	
+	private void listarUsuarios() throws IOException{
+		ArrayList<Usuario> listaUsuarios = ConexionEstaticaBBDD.listarUsuarios();
+		this.output.writeObject(listaUsuarios);
 	}
 
 	private void activarUsuario() {
@@ -142,4 +127,6 @@ public class HiloCliente implements Runnable {
 	private void verNota() {
 
 	}
+	
+	
 }

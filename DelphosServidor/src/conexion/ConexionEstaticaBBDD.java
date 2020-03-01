@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import modelo.Usuario;
 
 /**
@@ -82,15 +83,43 @@ public class ConexionEstaticaBBDD {
 		return existe;
 	}
 	
+	/**
+	 * Método para comprobar que existe un usuario en la BBDD, se le llamará a la hora del login
+	 * @param nombre
+	 * @param password
+	 * @return 
+	 */
 	public static Usuario comprobarUsuario(String nombre, String password){
 		Usuario usuario = null;
 		String sql = "SELECT U.ID, U.NOMBRE, R.ID_ROL FROM "+ConstantesConexionBBDD.TABLAUSUARIOS+" U, "+ConstantesConexionBBDD.TABLAROLESASIGNADOS+
 				" R WHERE NOMBRE= '"+nombre+"' AND PASSWORD = '"+password+"'"
 				+ "AND U.ID = R.ID_USUARIO";
+		System.out.println(sql);
 		try {
 			registros = sentenciaSQL.executeQuery(sql);
 			if (registros.next()) {
 				usuario = new Usuario();
+				usuario.setIdUsuario(registros.getInt(1));
+				usuario.setNombreUsuario(registros.getString(2));
+				usuario.setRol((byte)registros.getInt(3));
+				System.out.println(usuario.toString());
+			}		
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return usuario; 
+	}
+	
+	public static ArrayList<Usuario> listarUsuarios(){
+		System.out.println("Entrando a listar usuarios");
+		ArrayList<Usuario> listaUsuarios = new ArrayList<>();
+		String sql = "SELECT U.ID, U.NOMBRE, U.PASSWORD, U.TELEFONO, U.DIRECCION, U.EDAD, R.ID_ROL FROM "+ConstantesConexionBBDD.TABLAUSUARIOS+" U, "+ConstantesConexionBBDD.TABLAROLESASIGNADOS+
+				" R WHERE U.ID = R.ID_USUARIO";
+		System.out.println(sql);
+		try {
+			registros = sentenciaSQL.executeQuery(sql);
+			while(registros.next()){
+				Usuario usuario = new Usuario();
 				usuario.setIdUsuario(registros.getInt(1));
 				usuario.setNombreUsuario(registros.getString(2));
 				usuario.setPasswordString(registros.getString(3));
@@ -98,11 +127,11 @@ public class ConexionEstaticaBBDD {
 				usuario.setDireccion(registros.getString(5));
 				usuario.setEdad(registros.getInt(6));
 				usuario.setRol((byte)registros.getInt(7));
-				System.out.println(usuario.toString());
-			}		
+				listaUsuarios.add(usuario);		
+			}
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
-		return usuario; 
+		return listaUsuarios; 
 	}
 }
