@@ -48,13 +48,12 @@ public class ConexionEstaticaBBDD {
 		boolean registrado = false;
 		String sql = "INSERT INTO " + ConstantesConexionBBDD.TABLAUSUARIOS + "(NOMBRE, PASSWORD,TELEFONO,DIRECCION,EDAD) VALUES ('" + usuario.getNombreUsuario() + "', '" + usuario.getPasswordString() + "', '"+ usuario.getTelefono()+ "','"
 				+ usuario.getDireccion()
-				+ "', " + usuario.getEdad()+","+0+")";
+				+ "', " + usuario.getEdad()+")";
 		
 		System.out.println(sql);
 		try {
 			if (!existeUsuario(usuario.getNombreUsuario())) {
-				int registrados = sentenciaSQL.executeUpdate(sql);
-				if (registrados != 0) {
+				if (sentenciaSQL.executeUpdate(sql) == 1 && registrarRol(idUltimoRegistrado(usuario.getNombreUsuario()), 0)) {
 					registrado = true;
 				}
 			}
@@ -62,6 +61,34 @@ public class ConexionEstaticaBBDD {
 			e.printStackTrace();
 		}
 		return registrado;
+	}
+	
+	private synchronized static boolean registrarRol(int id, int rol){
+		boolean correcto = false;
+		String sql = "INSERT INTO "+ConstantesConexionBBDD.TABLAROLESASIGNADOS+"(ID_ROL, ID_USUARIO) VALUES ("+rol+","+id+")";
+		try {
+			if (sentenciaSQL.executeUpdate(sql) == 1) {
+				correcto = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return correcto;
+	}
+	
+	private static int idUltimoRegistrado(String nombre){
+		int id = -1;
+		String sql = "SELECT ID FROM "+ConstantesConexionBBDD.TABLAUSUARIOS+" WHERE NOMBRE = '"+nombre+"'";
+		try {
+			registros = sentenciaSQL.executeQuery(sql);
+			if (registros.next()) {
+				id = registros.getInt(1);
+				System.out.println(id);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return id;
 	}
 	
 	/**
