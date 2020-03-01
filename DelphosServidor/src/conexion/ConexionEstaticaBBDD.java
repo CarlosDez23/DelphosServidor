@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import modelo.Curso;
 import modelo.Usuario;
 
 /**
@@ -174,5 +175,23 @@ public class ConexionEstaticaBBDD {
 			e.printStackTrace();
 		}
 		return activado; 
+	}
+	
+	public static ArrayList<Curso> listarCursos (){
+		ArrayList<Curso> listaCursos = new ArrayList<>();
+		String sql = "SELECT * FROM "+ConstantesConexionBBDD.TABLACURSO;
+		try {
+			registros = sentenciaSQL.executeQuery(sql);
+			while(registros.next()){
+				Curso curso = new Curso();
+				curso.setIdCurso(registros.getInt(1));
+				curso.setCodigoCurso(registros.getString(2));
+				curso.setNombre(registros.getString(3));
+				listaCursos.add(curso);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listaCursos;
 	}
 }

@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import modelo.Curso;
 import modelo.Usuario;
 
 /**
@@ -75,12 +76,14 @@ public class HiloCliente implements Runnable {
 			case CodigoOrden.ACTIVAR_USUARIO:
 				activarUsuario();
 				break;
+			case CodigoOrden.LISTAR_CURSOS:
+				listarCursos();
+				break;
 			default:
 				break;
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
-			System.out.println("La opción del menú en la que ha fallado es " + orden);
 		}
 	}
 
@@ -103,6 +106,11 @@ public class HiloCliente implements Runnable {
 		Usuario usuario = (Usuario) this.input.readObject();
 		this.output.writeObject(ConexionEstaticaBBDD.asignarRol(usuario));
 		
+	}
+	
+	private void listarCursos() throws IOException{
+		ArrayList<Curso> listaCursos = ConexionEstaticaBBDD.listarCursos();
+		this.output.writeObject(listaCursos);
 	}
 
 	private void addCurso() {
