@@ -296,7 +296,7 @@ public class ConexionEstaticaBBDD {
 		return listaAlumnos;
 	}
 	
-	public static boolean ponerNota(Nota nota){
+	public static synchronized boolean ponerNota(Nota nota){
 		boolean puesta = false;
 		String sql = "INSERT INTO "+ConstantesConexionBBDD.TABLANOTAS+" (COD_ALUMNO, COD_PROFESOR, NOTA) VALUES ( "+
 				nota.getIdAlumno()+", "+nota.getIdProfesor()+", "+nota.getNota()+")";
@@ -308,5 +308,26 @@ public class ConexionEstaticaBBDD {
 			e.printStackTrace();
 		}
 		return puesta;
+	}
+	
+	public static ArrayList<Usuario> listarProfesoresAlumno(int id){
+		ArrayList<Usuario> listaUsuarios = new ArrayList<>();
+		String sql = "SELECT * FROM "+ConstantesConexionBBDD.TABLAUSUARIOS+" U, "+ ConstantesConexionBBDD.TABLAIMPARTE +" I WHERE I.COD_CURSO = (SELECT IDCURSO FROM ALUMNO WHERE ID = "+id+" ) AND U.ID = I.COD_PROFESOR ";
+		try {
+			registros = sentenciaSQL.executeQuery(sql);
+			while (registros.next()) {				
+				Usuario usuario = new Usuario();
+				usuario.setIdUsuario(registros.getInt(1));
+				usuario.setNombreUsuario(registros.getString(2));
+				usuario.setPasswordString(registros.getString(3));
+				usuario.setTelefono(registros.getString(4));
+				usuario.setDireccion(registros.getString(5));
+				usuario.setEdad(registros.getInt(6));
+				listaUsuarios.add(usuario);
+			}		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listaUsuarios;
 	}
 }

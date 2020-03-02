@@ -27,9 +27,7 @@ public class HiloCliente implements Runnable {
 	private Socket cliente;
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
-	//private DataOutputStream outputNormal;
-	//private DataInputStream inputNormal;
-
+	
 	public HiloCliente(Socket cliente) {
 		this.hilo = new Thread(this);
 		this.cliente = cliente;
@@ -114,6 +112,9 @@ public class HiloCliente implements Runnable {
 				ponerNota();
 				break;
 				
+			case CodigoOrden.LISTAR_PROFESORES_ALUMNO:
+				listarProfesoresAlumno();
+				break;
 			default:
 				break;
 			}
@@ -182,5 +183,10 @@ public class HiloCliente implements Runnable {
 	private void ponerNota() throws IOException, ClassNotFoundException {
 		Nota nota = (Nota) this.input.readObject();
 		this.output.writeObject(ConexionEstaticaBBDD.ponerNota(nota));
+	}
+
+	private void listarProfesoresAlumno() throws IOException, ClassNotFoundException {
+		int id = (int) this.input.readObject();
+		this.output.writeObject(ConexionEstaticaBBDD.listarProfesoresAlumno(id));
 	}
 }
