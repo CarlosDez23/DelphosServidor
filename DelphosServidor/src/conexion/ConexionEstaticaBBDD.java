@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import modelo.Alumno;
 import modelo.Curso;
+import modelo.Nota;
 import modelo.Usuario;
 
 /**
@@ -256,5 +257,56 @@ public class ConexionEstaticaBBDD {
 			e.printStackTrace();
 		}
 		return registrado;
+	}
+	
+	public static ArrayList<Curso> listarCursosProfesor(int idProfesor){
+		ArrayList<Curso> listaCursos = new ArrayList<>();
+		String sql = "SELECT C.IDCURSO, C.CODIGO, C.NOMBRE FROM "+ConstantesConexionBBDD.TABLACURSO+" C, "+ConstantesConexionBBDD.TABLAIMPARTE+" I" 
+				+" WHERE C.IDCURSO = I.COD_CURSO AND I.COD_PROFESOR = "+idProfesor;
+		try {
+			registros = sentenciaSQL.executeQuery(sql);
+			while (registros.next()) {
+				Curso curso = new Curso();
+				curso.setIdCurso(registros.getInt(1));
+				curso.setCodigoCurso(registros.getString(2));
+				curso.setNombre(registros.getString(3));
+				listaCursos.add(curso);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listaCursos;
+	}
+	
+	public static ArrayList<Alumno> listarAlumnosCurso(int idCurso){
+		ArrayList<Alumno> listaAlumnos = new ArrayList<>();
+		String sql = "SELECT U.ID, U.NOMBRE FROM "+ConstantesConexionBBDD.TABLAUSUARIOS+" U, "+ConstantesConexionBBDD.TABLAALUMNO+" A "+
+				" WHERE A.IDCURSO = "+idCurso+" AND  A.ID = U.ID";
+		try {
+			registros = sentenciaSQL.executeQuery(sql);
+			while(registros.next()){
+				Alumno aux = new Alumno();
+				aux.setIdUsuario(registros.getInt(1));
+				aux.setNombreUsuario(registros.getString(2));
+				listaAlumnos.add(aux);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listaAlumnos;
+	}
+	
+	public static boolean ponerNota(Nota nota){
+		boolean puesta = false;
+		String sql = "INSERT INTO "+ConstantesConexionBBDD.TABLANOTAS+" (COD_ALUMNO, COD_PROFESOR, NOTA) VALUES ( "+
+				nota.getIdAlumno()+", "+nota.getIdProfesor()+", "+nota.getNota()+")";
+		try {
+			if (sentenciaSQL.executeUpdate(sql) == 1) {
+				puesta = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return puesta;
 	}
 }

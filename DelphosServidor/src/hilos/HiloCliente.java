@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import modelo.Alumno;
 import modelo.Curso;
+import modelo.Nota;
 import modelo.Usuario;
 
 /**
@@ -48,16 +49,21 @@ public class HiloCliente implements Runnable {
 	public void run() {
 		try {
 			while (!this.cliente.isClosed()) {
-				try {
-					System.out.println("Esperando orden");
-					short tipoOrden = (short) this.input.readObject();
-					System.out.println(tipoOrden);
-					gestionOrden(tipoOrden);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				System.out.println("Esperando orden");
+				short tipoOrden = (short) this.input.readObject();
+				System.out.println(tipoOrden);
+				gestionOrden(tipoOrden);
 			}
-		} catch (Exception e) {
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			cerrarConexion();
+		}
+	}
+
+	public void cerrarConexion() {
+		try {
+			this.cliente.close();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -73,7 +79,7 @@ public class HiloCliente implements Runnable {
 				break;
 			case CodigoOrden.LISTAR_USUARIOS:
 				listarUsuarios();
-				break;	
+				break;
 			case CodigoOrden.ACTIVAR_USUARIO:
 				activarUsuario();
 				break;
@@ -83,17 +89,29 @@ public class HiloCliente implements Runnable {
 			case CodigoOrden.ADD_CURSO:
 				addCurso();
 				break;
-			
+
 			case CodigoOrden.EDITAR_CURSO:
 				editarCurso();
 				break;
-			
+
 			case CodigoOrden.ELEGIR_CURSO:
 				elegirCurso();
 				break;
-			
+
 			case CodigoOrden.ASIGNAR_PROFESOR:
 				asignarProfesor();
+				break;
+			
+			case CodigoOrden.LISTAR_CURSOS_PROFESOR:
+				listarCursosProfesor();
+				break;
+			
+			case CodigoOrden.LISTAR_ALUMNOS_CURSO:
+				listarAlumnosCurso();
+				break;
+			
+			case CodigoOrden.PONER_NOTA:
+				ponerNota();
 				break;
 				
 			default:
@@ -113,8 +131,8 @@ public class HiloCliente implements Runnable {
 		Usuario usuario = (Usuario) this.input.readObject();
 		this.output.writeObject(ConexionEstaticaBBDD.comprobarUsuario(usuario.getNombreUsuario(), usuario.getPasswordString()));
 	}
-	
-	private void listarUsuarios() throws IOException{
+
+	private void listarUsuarios() throws IOException {
 		ArrayList<Usuario> listaUsuarios = ConexionEstaticaBBDD.listarUsuarios();
 		this.output.writeObject(listaUsuarios);
 	}
@@ -122,50 +140,47 @@ public class HiloCliente implements Runnable {
 	private void activarUsuario() throws IOException, ClassNotFoundException {
 		Usuario usuario = (Usuario) this.input.readObject();
 		this.output.writeObject(ConexionEstaticaBBDD.asignarRol(usuario));
-		
 	}
-	
-	private void listarCursos() throws IOException{
+
+	private void listarCursos() throws IOException {
 		ArrayList<Curso> listaCursos = ConexionEstaticaBBDD.listarCursos();
 		this.output.writeObject(listaCursos);
 	}
 
 	private void addCurso() throws IOException, ClassNotFoundException {
-		Curso curso = (Curso)this.input.readObject();
+		Curso curso = (Curso) this.input.readObject();
 		this.output.writeObject(ConexionEstaticaBBDD.insertarCurso(curso));
 	}
 
 	private void editarCurso() throws IOException, ClassNotFoundException {
-		Curso curso = (Curso)this.input.readObject();
+		Curso curso = (Curso) this.input.readObject();
 		this.output.writeObject(ConexionEstaticaBBDD.actualizarCurso(curso));
 	}
 
 	private void elegirCurso() throws IOException, ClassNotFoundException {
 		Alumno alumno = (Alumno) this.input.readObject();
 		this.output.writeObject(ConexionEstaticaBBDD.asignarCurso(alumno));
-	}	
-	
+	}
+
 	private void asignarProfesor() throws IOException, ClassNotFoundException {
-		Usuario usuario = (Usuario)this.input.readObject();
-		int id = (int)this.input.readObject();
+		Usuario usuario = (Usuario) this.input.readObject();
+		int id = (int) this.input.readObject();
 		this.output.writeObject(ConexionEstaticaBBDD.asignarProfesor(usuario, id));
+	}
 	
-	}
-		
-
-	private void ponerNota() {
-
-	}
-
-	private void elegirProfesor() {
-
+	private void listarCursosProfesor() throws IOException, ClassNotFoundException{
+		int id = (int) this.input.readObject();
+		ArrayList<Curso> listaCursos = ConexionEstaticaBBDD.listarCursosProfesor(id);
+		this.output.writeObject(listaCursos);
 	}
 
-	private void verNota() {
-
+	private void listarAlumnosCurso() throws IOException, ClassNotFoundException {
+		int id = (int) this.input.readObject();
+		this.output.writeObject(ConexionEstaticaBBDD.listarAlumnosCurso(id));
 	}
 
-	
-	
-	
+	private void ponerNota() throws IOException, ClassNotFoundException {
+		Nota nota = (Nota) this.input.readObject();
+		this.output.writeObject(ConexionEstaticaBBDD.ponerNota(nota));
+	}
 }
