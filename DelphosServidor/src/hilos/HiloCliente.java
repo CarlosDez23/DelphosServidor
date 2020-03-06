@@ -115,6 +115,10 @@ public class HiloCliente implements Runnable {
 			case CodigoOrden.LISTAR_PROFESORES_ALUMNO:
 				listarProfesoresAlumno();
 				break;
+			
+			case CodigoOrden.VER_NOTA:
+				consultarNota();
+				break;
 			default:
 				break;
 			}
@@ -188,5 +192,12 @@ public class HiloCliente implements Runnable {
 	private void listarProfesoresAlumno() throws IOException, ClassNotFoundException {
 		int id = (int) this.input.readObject();
 		this.output.writeObject(ConexionEstaticaBBDD.listarProfesoresAlumno(id));
+	}
+
+	private void consultarNota() throws IOException, ClassNotFoundException {
+		Object n =  this.input.readObject();
+		Nota nota = (Nota) n;
+		System.out.println(n);
+		this.output.writeObject(ConexionEstaticaBBDD.consultarNota(nota));	
 	}
 }

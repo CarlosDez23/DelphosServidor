@@ -330,4 +330,23 @@ public class ConexionEstaticaBBDD {
 		}
 		return listaUsuarios;
 	}
+	
+	public static Nota consultarNota(Nota nota){
+		Nota aux = null;
+		String sql = "SELECT * FROM "+ConstantesConexionBBDD.TABLANOTAS+" WHERE COD_ALUMNO = "+nota.getIdAlumno()+" AND COD_PROFESOR = "+nota.getIdProfesor();
+		try {
+			registros = sentenciaSQL.executeQuery(sql);
+			if (registros.next()) {
+				aux = new Nota();
+				aux.setId(registros.getInt(1));
+				aux.setIdAlumno(registros.getInt(2));
+				aux.setIdProfesor(registros.getInt(3));
+				aux.setNota(registros.getFloat(4));
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return aux;
+	}
 }
