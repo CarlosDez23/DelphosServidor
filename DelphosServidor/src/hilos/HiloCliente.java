@@ -17,6 +17,7 @@ import modelo.Alumno;
 import modelo.Curso;
 import modelo.Nota;
 import modelo.Usuario;
+import seguridad.Seguridad;
 
 /**
  *
@@ -141,66 +142,66 @@ public class HiloCliente implements Runnable {
 
 	private void listarUsuarios() throws IOException {
 		ArrayList<Usuario> listaUsuarios = ConexionEstaticaBBDD.listarUsuarios();
-		this.output.writeObject(listaUsuarios);
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(listaUsuarios, Seguridad.claveCifrado));
 	}
 
 	private void activarUsuario() throws IOException, ClassNotFoundException {
-		Usuario usuario = (Usuario) this.input.readObject();
-		this.output.writeObject(ConexionEstaticaBBDD.asignarRol(usuario));
+		Usuario usuario = (Usuario) Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject());
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(ConexionEstaticaBBDD.asignarRol(usuario), Seguridad.claveCifrado));
 	}
 
 	private void listarCursos() throws IOException {
 		ArrayList<Curso> listaCursos = ConexionEstaticaBBDD.listarCursos();
-		this.output.writeObject(listaCursos);
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(listaCursos, Seguridad.claveCifrado));
 	}
 
 	private void addCurso() throws IOException, ClassNotFoundException {
-		Curso curso = (Curso) this.input.readObject();
-		this.output.writeObject(ConexionEstaticaBBDD.insertarCurso(curso));
+		Curso curso = (Curso) Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject()) ;
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(ConexionEstaticaBBDD.insertarCurso(curso), Seguridad.claveCifrado));
 	}
 
 	private void editarCurso() throws IOException, ClassNotFoundException {
-		Curso curso = (Curso) this.input.readObject();
-		this.output.writeObject(ConexionEstaticaBBDD.actualizarCurso(curso));
+		Curso curso = (Curso) Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject()) ;
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(ConexionEstaticaBBDD.actualizarCurso(curso), Seguridad.claveCifrado));
 	}
 
 	private void elegirCurso() throws IOException, ClassNotFoundException {
-		Alumno alumno = (Alumno) this.input.readObject();
-		this.output.writeObject(ConexionEstaticaBBDD.asignarCurso(alumno));
+		Alumno alumno = (Alumno) Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject());
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(ConexionEstaticaBBDD.asignarCurso(alumno), Seguridad.claveCifrado));
 	}
 
 	private void asignarProfesor() throws IOException, ClassNotFoundException {
-		Usuario usuario = (Usuario) this.input.readObject();
-		int id = (int) this.input.readObject();
-		this.output.writeObject(ConexionEstaticaBBDD.asignarProfesor(usuario, id));
+		Usuario usuario = (Usuario) Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject());
+		int id = (int)  Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject());
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(ConexionEstaticaBBDD.asignarProfesor(usuario,id), Seguridad.claveCifrado));
 	}
 	
 	private void listarCursosProfesor() throws IOException, ClassNotFoundException{
-		int id = (int) this.input.readObject();
+		int id = (int)  Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject());
 		ArrayList<Curso> listaCursos = ConexionEstaticaBBDD.listarCursosProfesor(id);
-		this.output.writeObject(listaCursos);
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(listaCursos, Seguridad.claveCifrado));
 	}
 
 	private void listarAlumnosCurso() throws IOException, ClassNotFoundException {
-		int id = (int) this.input.readObject();
-		this.output.writeObject(ConexionEstaticaBBDD.listarAlumnosCurso(id));
+		int id = (int)  Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject());
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(ConexionEstaticaBBDD.listarAlumnosCurso(id), Seguridad.claveCifrado));
 	}
 
 	private void ponerNota() throws IOException, ClassNotFoundException {
-		Nota nota = (Nota) this.input.readObject();
-		this.output.writeObject(ConexionEstaticaBBDD.ponerNota(nota));
+		Nota nota = (Nota) Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject());
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(ConexionEstaticaBBDD.ponerNota(nota), Seguridad.claveCifrado));
 	}
 
 	private void listarProfesoresAlumno() throws IOException, ClassNotFoundException {
-		int id = (int) this.input.readObject();
-		this.output.writeObject(ConexionEstaticaBBDD.listarProfesoresAlumno(id));
+		int id = (int)  Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject());
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(ConexionEstaticaBBDD.listarProfesoresAlumno(id), Seguridad.claveCifrado));
 	}
 
 	private void consultarNota() throws IOException, ClassNotFoundException {
-		Object n =  this.input.readObject();
-		Nota nota = (Nota) n;
-		System.out.println(n);
-		this.output.writeObject(ConexionEstaticaBBDD.consultarNota(nota));	
+		System.out.println("Entrando a recibir la nota ");
+		Nota nota = (Nota) Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject());
+		System.out.println("Nota recibida por el servidor "+nota.toString());
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(ConexionEstaticaBBDD.consultarNota(nota), Seguridad.claveCifrado));
 	}
 
 }

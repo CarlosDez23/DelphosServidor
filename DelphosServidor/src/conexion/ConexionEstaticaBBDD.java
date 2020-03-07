@@ -5,6 +5,7 @@ package conexion;
 
 import constantes.ConstantesConexionBBDD;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,6 +14,7 @@ import modelo.Alumno;
 import modelo.Curso;
 import modelo.Nota;
 import modelo.Usuario;
+import seguridad.Seguridad;
 
 /**
  *
@@ -49,17 +51,24 @@ public class ConexionEstaticaBBDD {
 	 */
 	public synchronized static boolean registrarUsuario(Usuario usuario) {
 		boolean registrado = false;
-		String sql = "INSERT INTO " + ConstantesConexionBBDD.TABLAUSUARIOS + "(NOMBRE, PASSWORD,TELEFONO,DIRECCION,EDAD) VALUES ('" + usuario.getNombreUsuario() + "', '" + usuario.getPasswordString() + "', '" + usuario.getTelefono() + "','"
-				+ usuario.getDireccion()
-				+ "', " + usuario.getEdad() + ", "+usuario.getClaveKey().getEncoded()+")";
+		
+		String sql2 = "INSERT INTO "+ConstantesConexionBBDD.TABLAUSUARIOS + "(NOMBRE, PASSWORD,TELEFONO,DIRECCION,EDAD,CLAVE) VALUES (?,?,?,?,?,?)";
 
-		System.out.println(sql);
+		System.out.println(sql2);
 		try {
+			PreparedStatement preparada = conex.prepareStatement(sql2);
+			preparada.setString(1, usuario.getNombreUsuario());
+			preparada.setString(2, usuario.getPasswordString());
+			preparada.setString(3, usuario.getTelefono());
+			preparada.setString(4, usuario.getDireccion());
+			preparada.setInt(5, usuario.getEdad());
+			preparada.setBytes(6, usuario.getClaveKey().getEncoded());
 			if (!existeUsuario(usuario.getNombreUsuario())) {
-				if (sentenciaSQL.executeUpdate(sql) == 1 && registrarRol(idUltimoRegistrado(usuario.getNombreUsuario()), 0)) {
+				if (preparada.executeUpdate() == 1 && registrarRol(idUltimoRegistrado(usuario.getNombreUsuario()), 0)) {
 					registrado = true;
 				}
 			}
+		
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -123,17 +132,21 @@ public class ConexionEstaticaBBDD {
 	 */
 	public static Usuario comprobarUsuario(String nombre, String password) {
 		Usuario usuario = null;
-		String sql = "SELECT U.ID, U.NOMBRE, R.ID_ROL FROM " + ConstantesConexionBBDD.TABLAUSUARIOS + " U, " + ConstantesConexionBBDD.TABLAROLESASIGNADOS
+		String sql = "SELECT U.ID, U.NOMBRE, R.ID_ROL, U.CLAVE FROM " + ConstantesConexionBBDD.TABLAUSUARIOS + " U, " + ConstantesConexionBBDD.TABLAROLESASIGNADOS
 				+ " R WHERE NOMBRE= '" + nombre + "' AND PASSWORD = '" + password + "'"
 				+ "AND U.ID = R.ID_USUARIO";
 		System.out.println(sql);
 		try {
 			registros = sentenciaSQL.executeQuery(sql);
+			System.out.println("Antes de next");
 			if (registros.next()) {
+				System.out.println("Entrando a registros");
 				usuario = new Usuario();
 				usuario.setIdUsuario(registros.getInt(1));
 				usuario.setNombreUsuario(registros.getString(2));
 				usuario.setRol((byte) registros.getInt(3));
+				usuario.setClaveKey(Seguridad.recomponerClaveSimetrica(registros.getBytes(4)));
+				Seguridad.claveCifrado = Seguridad.recomponerClaveSimetrica(registros.getBytes(4));
 				System.out.println(usuario.toString());
 			}
 		} catch (SQLException e) {

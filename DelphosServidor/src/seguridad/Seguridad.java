@@ -23,6 +23,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SealedObject;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import modelo.Nota;
 
 /**
@@ -57,6 +58,13 @@ public class Seguridad {
 		}
 		return objCifrado;
 	}
+	
+	public static SecretKey recomponerClaveSimetrica(byte[] clave) {
+
+        SecretKey clave2 = new SecretKeySpec(clave, 0, clave.length, "AES");
+        return clave2;
+
+    }
 
 	public static Object descifrar(SecretKey clave, Object obj) {
 
