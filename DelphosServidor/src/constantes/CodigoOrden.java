@@ -27,4 +27,5 @@ public class CodigoOrden {
 	public static final short LISTAR_CURSOS_PROFESOR = 13; 
 	public static final short LISTAR_ALUMNOS_CURSO = 14;
 	public static final short LISTAR_PROFESORES_ALUMNO = 15; 
+	public static final short INTERCAMBIA_CLAVES = 16; 
 }

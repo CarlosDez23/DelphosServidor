@@ -4,6 +4,7 @@
 package modelo;
 
 import java.io.Serializable;
+import javax.crypto.SecretKey;
 
 /**
  *
@@ -18,6 +19,7 @@ public class Usuario implements Serializable {
 	private String direccion;
 	private int edad;
 	private byte rol;
+	private SecretKey claveKey;
 	
 	public Usuario() {
 	}
@@ -31,7 +33,7 @@ public class Usuario implements Serializable {
 		this.edad = edad;
 		this.rol = rol;
 	}
-	
+
 	public Usuario(String nombreUsuario, String passwordString, String telefono, String direccion, int edad) {
 		this.nombreUsuario = nombreUsuario;
 		this.passwordString = passwordString;
@@ -39,6 +41,31 @@ public class Usuario implements Serializable {
 		this.direccion = direccion;
 		this.edad = edad;
 	}
+
+	public Usuario(int idUsuario, String nombreUsuario, String passwordString, String telefono, String direccion, int edad, byte rol, SecretKey claveKey) {
+		this.idUsuario = idUsuario;
+		this.nombreUsuario = nombreUsuario;
+		this.passwordString = passwordString;
+		this.telefono = telefono;
+		this.direccion = direccion;
+		this.edad = edad;
+		this.rol = rol;
+		this.claveKey = claveKey;
+	}
+
+	public Usuario(String nombreUsuario, String passwordString, String telefono, String direccion, int edad, SecretKey claveKey) {
+		this.nombreUsuario = nombreUsuario;
+		this.passwordString = passwordString;
+		this.telefono = telefono;
+		this.direccion = direccion;
+		this.edad = edad;
+		this.claveKey = claveKey;
+	}
+	
+	
+
+	
+	
 	
 	
 	public int getIdUsuario() {
@@ -96,6 +123,16 @@ public class Usuario implements Serializable {
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
+
+	public SecretKey getClaveKey() {
+		return claveKey;
+	}
+
+	public void setClaveKey(SecretKey claveKey) {
+		this.claveKey = claveKey;
+	}
+	
+	
 
 	@Override
 	public String toString() {

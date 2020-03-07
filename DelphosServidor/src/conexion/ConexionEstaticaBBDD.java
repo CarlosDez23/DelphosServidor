@@ -51,7 +51,7 @@ public class ConexionEstaticaBBDD {
 		boolean registrado = false;
 		String sql = "INSERT INTO " + ConstantesConexionBBDD.TABLAUSUARIOS + "(NOMBRE, PASSWORD,TELEFONO,DIRECCION,EDAD) VALUES ('" + usuario.getNombreUsuario() + "', '" + usuario.getPasswordString() + "', '" + usuario.getTelefono() + "','"
 				+ usuario.getDireccion()
-				+ "', " + usuario.getEdad() + ")";
+				+ "', " + usuario.getEdad() + ", "+usuario.getClaveKey().getEncoded()+")";
 
 		System.out.println(sql);
 		try {

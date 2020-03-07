@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import javax.crypto.SecretKey;
 import modelo.Alumno;
 import modelo.Curso;
 import modelo.Nota;
@@ -119,6 +120,7 @@ public class HiloCliente implements Runnable {
 			case CodigoOrden.VER_NOTA:
 				consultarNota();
 				break;
+			
 			default:
 				break;
 			}
@@ -200,4 +202,5 @@ public class HiloCliente implements Runnable {
 		System.out.println(n);
 		this.output.writeObject(ConexionEstaticaBBDD.consultarNota(nota));	
 	}
+
 }

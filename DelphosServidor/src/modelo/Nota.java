@@ -17,14 +17,22 @@ public class Nota implements Serializable {
 	private int idAlumno;
 	private int idProfesor;
 	private float nota;
+	private byte [] firma;
 
 	public Nota() {
 	}
-
+	
 	public Nota(int idAlumno, int idProfesor, float nota) {
 		this.idAlumno = idAlumno;
 		this.idProfesor = idProfesor;
 		this.nota = nota;
+	}
+
+	public Nota(int idAlumno, int idProfesor, float nota, byte [] firma) {
+		this.idAlumno = idAlumno;
+		this.idProfesor = idProfesor;
+		this.nota = nota;
+		this.firma = firma;
 	}
 
 	public int getId() {
@@ -59,6 +67,15 @@ public class Nota implements Serializable {
 		this.nota = nota;
 	}
 
+	public byte[] getFirma() {
+		return firma;
+	}
+
+	public void setFirma(byte[] firma) {
+		this.firma = firma;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "Nota{" + "id=" + id + ", idAlumno=" + idAlumno + ", idProfesor=" + idProfesor + ", nota=" + nota + '}';
