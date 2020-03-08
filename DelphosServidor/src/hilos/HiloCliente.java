@@ -132,7 +132,9 @@ public class HiloCliente implements Runnable {
 
 	private void registrarUsuario() throws IOException, ClassNotFoundException {
 		Usuario usuario = (Usuario) this.input.readObject();
+		//De igual manera vamos a crear el par de claves para este usuario
 		this.output.writeObject(ConexionEstaticaBBDD.registrarUsuario(usuario));
+		
 	}
 
 	private void login() throws ClassNotFoundException, IOException {
