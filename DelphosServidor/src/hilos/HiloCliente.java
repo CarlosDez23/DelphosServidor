@@ -140,6 +140,9 @@ public class HiloCliente implements Runnable {
 	private void login() throws ClassNotFoundException, IOException {
 		Usuario usuario = (Usuario) this.input.readObject();
 		this.output.writeObject(ConexionEstaticaBBDD.comprobarUsuario(usuario.getNombreUsuario(), usuario.getPasswordString()));
+		//Le mandamos nuestra clave pública al usuario logueado
+		this.output.writeObject(Seguridad.mipublica);
+		
 	}
 
 	private void listarUsuarios() throws IOException {
@@ -200,10 +203,13 @@ public class HiloCliente implements Runnable {
 	}
 
 	private void consultarNota() throws IOException, ClassNotFoundException {
-		System.out.println("Entrando a recibir la nota ");
 		Nota nota = (Nota) Seguridad.descifrar(Seguridad.claveCifrado, this.input.readObject());
-		System.out.println("Nota recibida por el servidor "+nota.toString());
-		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(ConexionEstaticaBBDD.consultarNota(nota), Seguridad.claveCifrado));
+		Nota enviar = ConexionEstaticaBBDD.consultarNota(nota);
+		if (enviar != null) {
+			System.out.println("Nota rescatada "+enviar.getNota());
+			enviar.setFirma(Seguridad.firmar(enviar.getNota(), Seguridad.miprivada));
+		}
+		this.output.writeObject(Seguridad.cifrarConClaveSimetrica(enviar, Seguridad.claveCifrado));
 	}
 
 }

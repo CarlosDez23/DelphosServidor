@@ -16,19 +16,21 @@ public class Nota implements Serializable {
 	private int id;
 	private int idAlumno;
 	private int idProfesor;
-	private float nota;
+	private String nota;
 	private byte [] firma;
 
 	public Nota() {
 	}
-	
-	public Nota(int idAlumno, int idProfesor, float nota) {
+
+	public Nota(int idAlumno, int idProfesor, String nota, byte[] firma) {
 		this.idAlumno = idAlumno;
 		this.idProfesor = idProfesor;
 		this.nota = nota;
+		this.firma = firma;
 	}
 
-	public Nota(int idAlumno, int idProfesor, float nota, byte [] firma) {
+	public Nota(int id, int idAlumno, int idProfesor, String nota, byte[] firma) {
+		this.id = id;
 		this.idAlumno = idAlumno;
 		this.idProfesor = idProfesor;
 		this.nota = nota;
@@ -59,11 +61,11 @@ public class Nota implements Serializable {
 		this.idProfesor = idProfesor;
 	}
 
-	public float getNota() {
+	public String getNota() {
 		return nota;
 	}
 
-	public void setNota(float nota) {
+	public void setNota(String nota) {
 		this.nota = nota;
 	}
 
@@ -74,10 +76,10 @@ public class Nota implements Serializable {
 	public void setFirma(byte[] firma) {
 		this.firma = firma;
 	}
-	
-	
+
 	@Override
 	public String toString() {
-		return "Nota{" + "id=" + id + ", idAlumno=" + idAlumno + ", idProfesor=" + idProfesor + ", nota=" + nota + '}';
+		return "Nota{" + "id=" + id + ", idAlumno=" + idAlumno + ", idProfesor=" + idProfesor + ", nota=" + nota + ", firma=" + firma + '}';
 	}
+	
 }

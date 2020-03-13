@@ -354,7 +354,9 @@ public class ConexionEstaticaBBDD {
 				aux.setId(registros.getInt(1));
 				aux.setIdAlumno(registros.getInt(2));
 				aux.setIdProfesor(registros.getInt(3));
-				aux.setNota(registros.getFloat(4));
+				float valor = registros.getFloat(4);
+				aux.setNota(Float.toString(valor));
+				System.out.println("Nota consultada "+aux.toString());
 				
 			}
 		} catch (SQLException e) {
