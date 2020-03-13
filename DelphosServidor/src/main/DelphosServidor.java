@@ -4,6 +4,7 @@
 package main;
 
 import hilos.HiloServidor;
+import hilos.HiloServidorWeb;
 import java.security.KeyPair;
 import seguridad.Seguridad;
 import java.io.*;
@@ -21,6 +22,7 @@ public class DelphosServidor {
 		gestionClaves();
 		HiloServidor servidor = new HiloServidor();
 		servidor.start();
+		new HiloServidorWeb().start();
 	}
 
 	private static void gestionClaves() {

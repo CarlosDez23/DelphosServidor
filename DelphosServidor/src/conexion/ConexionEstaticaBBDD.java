@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import modelo.Alumno;
+import modelo.BoletinWeb;
 import modelo.Curso;
 import modelo.Nota;
 import modelo.Usuario;
@@ -363,5 +364,21 @@ public class ConexionEstaticaBBDD {
 			e.printStackTrace();
 		}
 		return aux;
+	}
+	
+	public static ArrayList<BoletinWeb> consultaNotasWeb(){
+		ArrayList<BoletinWeb> listNotas = new ArrayList<>();
+		String sql = "SELECT N.NOTA, U.NOMBRE FROM "+ConstantesConexionBBDD.TABLANOTAS+" N, "+
+				ConstantesConexionBBDD.TABLAUSUARIOS+" U WHERE N.COD_ALUMNO = U.ID";
+		try {
+			registros = sentenciaSQL.executeQuery(sql);
+			while(registros.next()){
+				BoletinWeb boletin = new BoletinWeb(registros.getString(2), registros.getString(1));
+				listNotas.add(boletin);	
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listNotas;
 	}
 }
